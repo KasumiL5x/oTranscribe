@@ -18,9 +18,17 @@ function formatMilliseconds(time) {
     const hours = Math.floor(time / 3600).toString();
     const minutes = ("0" + Math.floor(time / 60) % 60).slice(-2);
     const seconds = ("0" + Math.floor( time % 60 )).slice(-2);
-    let formatted = minutes+":"+seconds;
+
+    // Remove left of decimal.
+    var milliseconds = time % 1;
+    // After decimal (or comma) for 2 characters (0.xx).
+    milliseconds = (milliseconds + "").slice(2,4);
+    // Create additional string for ms IF not zero or empty.
+    const millisecondsString = (milliseconds === "00" || milliseconds === "") ? "" : ("-" + milliseconds);
+
+    let formatted = minutes+":"+seconds + millisecondsString;
     if (hours !== '0') {
-        formatted = hours + ":" + minutes + ":" + seconds;
+        formatted = hours + ":" + minutes + ":" + seconds + millisecondsString;
     }
     formatted = formatted.replace(/\s/g,'');
     return formatted;
@@ -55,7 +63,7 @@ function insertTimestamp(){
 
 function createTimestampEl(time) {
     const timestamp = document.createElement('span');
-    timestamp.innerText = time.formatted;
+    timestamp.innerText = "#" + time.formatted + "#";
     timestamp.className = 'timestamp';
     timestamp.setAttribute('contenteditable', 'false');
     timestamp.setAttribute('data-timestamp', time.raw);
